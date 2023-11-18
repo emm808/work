@@ -1,0 +1,34 @@
+# Import necessary libraries
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.metrics import accuracy_score, classification_report
+
+# Assuming you have a CSV file with labeled data (columns: 'text', 'candidate_support')
+# Load the dataset
+df = pd.read_csv('your_dataset.csv')
+
+# Split the data into training and testing sets
+train_data, test_data, train_labels, test_labels = train_test_split(
+    df['text'], df['candidate_support'], test_size=0.2, random_state=42
+)
+
+# Convert text data to numerical features using CountVectorizer
+vectorizer = CountVectorizer()
+X_train = vectorizer.fit_transform(train_data)
+X_test = vectorizer.transform(test_data)
+
+# Initialize and train a Naive Bayes classifier
+classifier = MultinomialNB()
+classifier.fit(X_train, train_labels)
+
+# Make predictions on the test set
+predictions = classifier.predict(X_test)
+
+# Evaluate the model
+accuracy = accuracy_score(test_labels, predictions)
+report = classification_report(test_labels, predictions)
+
+print(f'Accuracy: {accuracy}')
+print('\nClassification Report:\n', report)
